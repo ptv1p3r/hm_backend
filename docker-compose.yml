@@ -1,0 +1,4 @@
+hm-server:
+  image: hm_server
+  ports:
+    - 5000:5000
