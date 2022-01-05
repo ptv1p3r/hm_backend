@@ -1,6 +1,8 @@
 import psycopg2
 from flask import Blueprint, render_template, jsonify
 
+from config import DATABASE_HOST, DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, DATABASE_PORT
+
 consultas = Blueprint('consultas', __name__, template_folder='templates')
 
 
@@ -14,14 +16,16 @@ def createAccount():
 @consultas.route("/v1/consultas/list", methods=["GET"])
 def getConsultas():
     dbconnection = None
-    conn = psycopg2.connect(
-        host="192.168.2.14",
-        database="hm_data",
-        user="postgres",
-        password="admin")
+
+    dbconnection = psycopg2.connect(
+        host=DATABASE_HOST,
+        port=DATABASE_PORT,
+        database=DATABASE_NAME,
+        user=DATABASE_USER,
+        password=DATABASE_PASSWORD)
 
     # create a cursor
-    cur = conn.cursor()
+    cur = dbconnection.cursor()
 
     # execute a statement
     print('PostgreSQL database version:')
