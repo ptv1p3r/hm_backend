@@ -3,6 +3,7 @@ from flask import Flask
 import datetime
 from app.templates.consultas.consultas import consultas
 from app.templates.utentes.utentes import utentes
+from app.templates.medicos.medicos import medicos
 
 app = Flask(__name__)
 
@@ -23,10 +24,20 @@ def is_Alive():
 # regista endpoint de utentes
 app.register_blueprint(utentes)
 
+# regista endpoint de medicos
+app.register_blueprint(medicos)
+
 # regista endpoint de consultas
 app.register_blueprint(consultas)
 
-# # Sample HTTP error handling
+
+# HTTP error handling
 # @app.errorhandler(404)
 # def not_found(error):
 #     return render_template('404.html'), 404
+
+
+@app.after_request
+def add_header(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
