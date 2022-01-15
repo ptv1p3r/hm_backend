@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS consultas
     );
 
 -- Creation of medicos table
-CREATE TABLE IF NOT EXISTS medicos
+create table if not exists medicos
 (
     id
     serial
@@ -58,7 +58,9 @@ CREATE TABLE IF NOT EXISTS medicos
 (
     20
 ),
-    data_nascimento timestamp
+    data_nascimento timestamp,
+    datecreate timestamp,
+    datemodify timestamp
     );
 
 -- Creation of utentes table
