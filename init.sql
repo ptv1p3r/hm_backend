@@ -64,42 +64,19 @@ create table if not exists medicos
     );
 
 -- Creation of utentes table
-CREATE TABLE IF NOT EXISTS utentes
+create table if not exists utentes
 (
-    id
-    serial
-    constraint
-    utentes_pk
-    primary
-    key,
-    nome
-    varchar
-(
-    255
-),
-    morada varchar
-(
-    255
-),
+    id              serial
+        constraint utentes_pk
+            primary key,
+    nome            varchar(255),
+    morada          varchar(255),
     data_nascimento timestamp,
-    telemovel varchar
-(
-    20
-),
-    email varchar
-(
-    255
-),
-    nif varchar
-(
-    10
-),
-    codpost varchar
-(
-    10
-),
-    nmr_utente varchar
-(
-    20
-)
-    );
+    telemovel       varchar(20),
+    email           varchar(255),
+    nif             varchar(10),
+    codpost         varchar(10),
+    nmr_utente      varchar(20),
+    datecreate      timestamp,
+    datemodify      timestamp
+);

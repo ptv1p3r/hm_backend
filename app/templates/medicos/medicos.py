@@ -1,5 +1,5 @@
 import psycopg2
-from flask import Blueprint, render_template, jsonify, request
+from flask import Blueprint, jsonify, request
 from datetime import datetime
 from config import DATABASE_HOST, DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, DATABASE_PORT
 
