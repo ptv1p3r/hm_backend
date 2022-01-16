@@ -1,45 +1,34 @@
+-- Creation of especialidades table
+create table if not exists especialidades
+(
+    id         serial
+        constraint especialidades_pk
+            primary key,
+    nome       varchar(255),
+    datecreate timestamp,
+    datemodify timestamp
+);
+
 -- Creation of medicos table
 create table if not exists medicos
 (
-    id
-    serial
-    constraint
-    medicos_pk
-    primary
-    key,
-    morada
-    varchar
-(
-    255
-),
-    email varchar
-(
-    255
-),
-    codpost varchar
-(
-    8
-),
-    nome varchar
-(
-    255
-) not null,
-    nif varchar
-(
-    10
-),
-    ced_profissional varchar
-(
-    50
-) not null,
-    telemovel varchar
-(
-    20
-),
-    data_nascimento timestamp,
-    datecreate timestamp,
-    datemodify timestamp
-    );
+    id               serial
+        constraint medicos_pk
+            primary key,
+    morada           varchar(255),
+    email            varchar(255),
+    codpost          varchar(8),
+    nome             varchar(255) not null,
+    nif              varchar(10),
+    ced_profissional varchar(50)  not null,
+    telemovel        varchar(20),
+    data_nascimento  timestamp,
+    datecreate       timestamp,
+    datemodify       timestamp,
+    id_especialidade integer
+        constraint especialidades_fk
+            references especialidades
+);
 
 -- Creation of utentes table
 create table if not exists utentes
@@ -58,7 +47,6 @@ create table if not exists utentes
     datecreate      timestamp,
     datemodify      timestamp
 );
-
 
 -- Creation of consultas table
 create table if not exists consultas

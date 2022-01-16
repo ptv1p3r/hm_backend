@@ -22,6 +22,7 @@ def createMedicos():
     data_nif = data.get('Nif')
     data_mobile = data.get('Telemovel')
     data_cedprof = data.get('C.Profissional')
+    data_especialidadeId = data.get('IdEspecialidade')
     data_datebirth = datetime.strptime(data.get('DataNascimento'), '%Y-%m-%d').date()
     data_datecreate = now.strftime('%Y-%m-%d %H:%M:%S')
     # data_datecreate = now
@@ -41,10 +42,10 @@ def createMedicos():
             # if cursor.rowcount == -1:
             if cursor.rowcount == 0:
                 # user not found
-                sql = "INSERT INTO medicos (nome, morada, email, codpost, nif, ced_profissional, telemovel, data_nascimento, datecreate, datemodify) " \
-                      "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                sql = "INSERT INTO medicos (nome, morada, email, codpost, nif, ced_profissional, telemovel, data_nascimento, datecreate, datemodify, id_especialidade) " \
+                      "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
                 val = [data_name, data_address, data_email, data_codpost, data_nif, data_cedprof, data_mobile,
-                       data_datebirth, now, now]
+                       data_datebirth, now, now, int(data_especialidadeId)]
 
                 cursor.execute(sql, val)
                 dbconnection.commit()
@@ -120,7 +121,7 @@ def getMedicos():
         #                                 database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
 
         cursor = dbconnection.cursor()
-        cursor.execute("SELECT id, nome, morada, email, codpost, nif, "
+        cursor.execute("SELECT id, nome, morada, email, codpost, nif, id_especialidade, "
                        "to_char(data_nascimento, 'YYYY-MM-DD') AS DataNascimento, to_char(datecreate, 'YYYY-MM-DD HH24:MI:SS') AS DateCreate, "
                        "to_char(datemodify, 'YYYY-MM-DD HH24:MI:SS') AS DateModify "
                        "FROM medicos")
@@ -158,7 +159,7 @@ def getMedicosById(id):
             # dbconnection = psycopg2.connect(host="127.0.0.1", port=DATABASE_PORT,
             #                                 database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
             cursor = dbconnection.cursor()
-            cursor.execute("SELECT id, nome, morada, email, codpost, nif, "
+            cursor.execute("SELECT id, nome, morada, email, codpost, nif, id_especialidade, "
                            "to_char(data_nascimento, 'YYYY-MM-DD') AS DataNascimento, to_char(datecreate, 'YYYY-MM-DD HH24:MI:SS') AS DateCreate, "
                            "to_char(datemodify, 'YYYY-MM-DD HH24:MI:SS') AS DateModify "
                            "FROM medicos WHERE id = %s", (int(id),))
@@ -199,6 +200,7 @@ def updateMedicoById(id):
     data_nif = data.get('Nif')
     data_mobile = data.get('Telemovel')
     data_cedprof = data.get('C.Profissional')
+    data_especialidadeId = data.get('IdEspecialidade')
     data_datebirth = datetime.strptime(data.get('DataNascimento'), '%Y-%m-%d').date()
     data_datecreate = now.strftime('%Y-%m-%d %H:%M:%S')
     # data_datecreate = now
@@ -212,10 +214,11 @@ def updateMedicoById(id):
             # dbconnection = psycopg2.connect(host="127.0.0.1", port=DATABASE_PORT,
             #                                 database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
             cursor = dbconnection.cursor()
-            cursor.execute("UPDATE medicos SET nome=%s, morada=%s, email=%s, "
-                           "codpost=%s, nif=%s, ced_profissional=%s, telemovel=%s, data_nascimento=%s, datemodify=%s "
+            cursor.execute("UPDATE medicos SET nome = %s, morada = %s, email = %s, id_especialidade = %s, "
+                           "codpost = %s, nif = %s, ced_profissional = %s, telemovel = %s, data_nascimento = %s, datemodify = %s "
                            "WHERE id = %s",
-                           (data_name, data_address, data_email, data_codpost, data_nif, data_cedprof, data_mobile,
+                           (data_name, data_address, data_email, int(data_especialidadeId), data_codpost, data_nif,
+                            data_cedprof, data_mobile,
                             data_datebirth, now, int(id)))
             rowcount = cursor.rowcount
             dbconnection.commit()
