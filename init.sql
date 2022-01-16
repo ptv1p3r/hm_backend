@@ -1,25 +1,3 @@
--- Creation of consultas table
-CREATE TABLE IF NOT EXISTS consultas
-(
-    id
-    serial
-    constraint
-    consultas_pk
-    primary
-    key
-    constraint
-    medicos___fk
-    references
-    medicos,
-    descricao
-    varchar
-(
-    255
-) not null,
-    date_create timestamp,
-    date_modify timestamp
-    );
-
 -- Creation of medicos table
 create table if not exists medicos
 (
@@ -79,4 +57,23 @@ create table if not exists utentes
     nmr_utente      varchar(20),
     datecreate      timestamp,
     datemodify      timestamp
+);
+
+
+-- Creation of consultas table
+create table if not exists consultas
+(
+    id         serial
+        constraint consultas_pk
+            primary key,
+    descricao  varchar(255) not null,
+    datecreate timestamp,
+    datemodify timestamp,
+    data       timestamp,
+    id_medico  integer
+        constraint medicos_fk
+            references medicos,
+    id_utente  integer
+        constraint utentes_fk
+            references utentes
 );
