@@ -88,7 +88,7 @@ def deleteMedicoById(id):
             rowcount = cursor.rowcount
             dbconnection.commit()
 
-        except psycopg2.connector.Error as err:
+        except psycopg2.Error as err:
             dbconnection.rollback()
 
         finally:
