@@ -4,6 +4,7 @@ import datetime
 from app.templates.consultas.consultas import consultas
 from app.templates.utentes.utentes import utentes
 from app.templates.medicos.medicos import medicos
+from app.templates.especialidades.especialidades import especialidades
 
 app = Flask(__name__)
 
@@ -20,6 +21,9 @@ def index():
 def is_Alive():
     return "Success", 201
 
+
+# regista endpoint de especialidades
+app.register_blueprint(especialidades)
 
 # regista endpoint de utentes
 app.register_blueprint(utentes)
