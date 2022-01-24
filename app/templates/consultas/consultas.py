@@ -18,7 +18,7 @@ def createConsulta():
     data_descricao = data.get('Descricao')
     data_utenteId = data.get('IdUtente')
     data_medicoId = data.get('IdMedico')
-    data_consulta = datetime.strptime(data.get('DataConsulta'), '%Y-%m-%d %H:%M:%S').date()
+    data_consulta = datetime.strptime(data.get('DataConsulta'), '%Y-%m-%d %H:%M:%S')
     # data_datecreate = now.strftime('%Y-%m-%d %H:%M:%S')
     # data_datecreate = now
 
