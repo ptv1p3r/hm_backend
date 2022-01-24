@@ -159,10 +159,11 @@ def getMedicosById(id):
             # dbconnection = psycopg2.connect(host="127.0.0.1", port=DATABASE_PORT,
             #                                 database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
             cursor = dbconnection.cursor()
-            cursor.execute("SELECT id, nome, morada, email, codpost, nif, id_especialidade, "
-                           "to_char(data_nascimento, 'YYYY-MM-DD') AS DataNascimento, to_char(datecreate, 'YYYY-MM-DD HH24:MI:SS') AS DateCreate, "
-                           "to_char(datemodify, 'YYYY-MM-DD HH24:MI:SS') AS DateModify "
-                           "FROM medicos WHERE id = %s", (int(id),))
+            cursor.execute(
+                "SELECT id, nome, morada, email, codpost, nif, id_especialidade, ced_profissional, telemovel, "
+                "to_char(data_nascimento, 'YYYY-MM-DD') AS DataNascimento, to_char(datecreate, 'YYYY-MM-DD HH24:MI:SS') AS DateCreate, "
+                "to_char(datemodify, 'YYYY-MM-DD HH24:MI:SS') AS DateModify "
+                "FROM medicos WHERE id = %s", (int(id),))
             datareturn = cursor.fetchall()
             rowcount = cursor.rowcount
 
