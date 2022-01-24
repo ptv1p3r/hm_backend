@@ -191,7 +191,7 @@ def updateConsultaById(id):
     data_descricao = data.get('Descricao')
     data_utenteId = data.get('IdUtente')
     data_medicoId = data.get('IdMedico')
-    data_consulta = datetime.strptime(data.get('DataConsulta'), '%Y-%m-%d %H:%M:%S').date()
+    data_consulta = datetime.strptime(data.get('DataConsulta'), '%Y-%m-%d %H:%M:%S')
 
     if id is not None and data_descricao is not None and data_utenteId is not None and data_medicoId is not None and data_consulta is not None:
         try:

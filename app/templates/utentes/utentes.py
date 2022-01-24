@@ -119,7 +119,7 @@ def getUtentes():
         #                                 database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
 
         cursor = dbconnection.cursor()
-        cursor.execute("SELECT id, nome, morada, email, codpost, nif, nmr_utente, "
+        cursor.execute("SELECT id, nome, morada, email, codpost, nif, nmr_utente, telemovel, "
                        "to_char(data_nascimento, 'YYYY-MM-DD') AS DataNascimento, to_char(datecreate, 'YYYY-MM-DD HH24:MI:SS') AS DateCreate, "
                        "to_char(datemodify, 'YYYY-MM-DD HH24:MI:SS') AS DateModify "
                        "FROM utentes")

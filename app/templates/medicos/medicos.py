@@ -121,7 +121,7 @@ def getMedicos():
         #                                 database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
 
         cursor = dbconnection.cursor()
-        cursor.execute("SELECT id, nome, morada, email, codpost, nif, id_especialidade, "
+        cursor.execute("SELECT id, nome, morada, email, codpost, nif, id_especialidade, ced_profissional, telemovel, "
                        "to_char(data_nascimento, 'YYYY-MM-DD') AS DataNascimento, to_char(datecreate, 'YYYY-MM-DD HH24:MI:SS') AS DateCreate, "
                        "to_char(datemodify, 'YYYY-MM-DD HH24:MI:SS') AS DateModify "
                        "FROM medicos")
