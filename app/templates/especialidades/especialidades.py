@@ -3,12 +3,12 @@ from flask import Blueprint, jsonify, request
 from datetime import datetime
 from config import DATABASE_HOST, DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, DATABASE_PORT
 
-utentes = Blueprint('utentes', __name__, template_folder='templates')
+especialidades = Blueprint('especialidades', __name__, template_folder='templates')
 
 
-# create new utente
-@utentes.route("/v1/utentes/create", methods=["POST"])
-def createUtentes():
+# create new especialidades
+@especialidades.route("/v1/especialidades/create", methods=["POST"])
+def createEspecialidades():
     dbconnection = None
     cursor = None
     userExists = False
@@ -16,17 +16,9 @@ def createUtentes():
 
     data = request.get_json()
     data_name = data.get('Nome')
-    data_address = data.get('Morada')
-    data_codpost = data.get('CodPostal')
-    data_email = data.get('Email')
-    data_nif = data.get('Nif')
-    data_mobile = data.get('Telemovel')
-    data_nmrutente = data.get('NrUtente')
-    data_datebirth = datetime.strptime(data.get('DataNascimento'), '%Y-%m-%d').date()
     data_datecreate = now.strftime('%Y-%m-%d %H:%M:%S')
-    # data_datecreate = now
 
-    if data_name is not None and data_email is not None:
+    if data_name is not None:
         try:
             dbconnection = psycopg2.connect(host=DATABASE_HOST, port=DATABASE_PORT,
                                             database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
@@ -34,16 +26,16 @@ def createUtentes():
             #                                 database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
             cursor = dbconnection.cursor()
 
-            # check if user exists by email
-            cursor.execute("SELECT id, email FROM medicos WHERE email = %s", (data_email,))
+            # check if user exists by nome
+            cursor.execute("SELECT id, nome FROM especialidades WHERE nome = %s", (data_name,))
             cursor.fetchone()
 
+            # if cursor.rowcount == -1:
             if cursor.rowcount == 0:
                 # user not found
-                sql = "INSERT INTO utentes (nome, morada, email, codpost, nif, nmr_utente, telemovel, data_nascimento, datecreate, datemodify) " \
-                      "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                val = [data_name, data_address, data_email, data_codpost, data_nif, data_nmrutente, data_mobile,
-                       data_datebirth, now, now]
+                sql = "INSERT INTO especialidades (nome, datecreate, datemodify) " \
+                      "VALUES (%s, %s, %s)"
+                val = [data_name, now, now]
 
                 cursor.execute(sql, val)
                 dbconnection.commit()
@@ -58,17 +50,17 @@ def createUtentes():
             dbconnection.close()
 
         if userExists:
-            return jsonify({'ok': True, 'message': 'Utente exists, not added'}), 200
+            return jsonify({'ok': True, 'message': 'Especialidade exists, not added'}), 200
         else:
-            return jsonify({'ok': True, 'message': 'Utente added successfully'}), 200
+            return jsonify({'ok': True, 'message': 'Especialidade added successfully'}), 200
     else:
-        return jsonify({'ok': False, 'message': 'Missing utente data'}), 400
+        return jsonify({'ok': False, 'message': 'Missing especialidade data'}), 400
 
 
-# delete utente by id
-@utentes.route('/v1/utentes/delete/', defaults={'id': None})
-@utentes.route("/v1/utentes/delete/<int:id>", methods=["DELETE"])
-def deleteUtenteById(id):
+# delete especialidade by id
+@especialidades.route('/v1/especialidades/delete/', defaults={'id': None})
+@especialidades.route("/v1/especialidades/delete/<int:id>", methods=["DELETE"])
+def deleteEspecialidadeById(id):
     dbconnection = None
     cursor = None
     rowcount = 0
@@ -82,7 +74,7 @@ def deleteUtenteById(id):
             #                                 database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
 
             cursor = dbconnection.cursor()
-            cursor.execute("DELETE FROM utentes WHERE ID = %s", (int(id),))
+            cursor.execute("DELETE FROM especialidades WHERE ID = %s", (int(id),))
             rowcount = cursor.rowcount
             dbconnection.commit()
 
@@ -94,17 +86,17 @@ def deleteUtenteById(id):
             dbconnection.close()
 
         if rowcount > 0:
-            return jsonify({'ok': True, 'message': 'Utente deleted successfully'}), 200
+            return jsonify({'ok': True, 'message': 'Especialidade deleted successfully'}), 200
         else:
-            return jsonify({'ok': True, 'message': 'Utente not deleted'}), 200
+            return jsonify({'ok': True, 'message': 'Especialidade not deleted'}), 200
 
     else:
-        return jsonify({'ok': False, 'message': 'Missing utente data'}), 400
+        return jsonify({'ok': False, 'message': 'Missing Especialidade data'}), 400
 
 
-# list all utentes
-@utentes.route("/v1/utentes/list", methods=["GET"])
-def getUtentes():
+# list all especialidades
+@especialidades.route("/v1/especialidades/list", methods=["GET"])
+def getEspecialidades():
     dbconnection = None
     cursor = None
     serializedData = []
@@ -119,10 +111,10 @@ def getUtentes():
         #                                 database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
 
         cursor = dbconnection.cursor()
-        cursor.execute("SELECT id, nome, morada, email, codpost, nif, nmr_utente, telemovel, "
-                       "to_char(data_nascimento, 'YYYY-MM-DD') AS DataNascimento, to_char(datecreate, 'YYYY-MM-DD HH24:MI:SS') AS DateCreate, "
+        cursor.execute("SELECT id, nome, "
+                       "to_char(datecreate, 'YYYY-MM-DD HH24:MI:SS') AS DateCreate, "
                        "to_char(datemodify, 'YYYY-MM-DD HH24:MI:SS') AS DateModify "
-                       "FROM utentes")
+                       "FROM especialidades")
         datareturn = cursor.fetchall()
         rowcount = cursor.rowcount
 
@@ -137,13 +129,13 @@ def getUtentes():
     if rowcount > 0:
         return jsonify({'ok': True, 'data': serializedData, "count": rowcount}), 200
     else:
-        return jsonify({'ok': True, 'message': 'No utentes found'}), 404
+        return jsonify({'ok': True, 'message': 'No especialidades found'}), 404
 
 
-# get utente by id
-@utentes.route('/v1/utentes/', defaults={'id': None})
-@utentes.route("/v1/utentes/<int:id>", methods=["GET"])
-def getUtentesById(id):
+# get especialidade by id
+@especialidades.route('/v1/especialidades/', defaults={'id': None})
+@especialidades.route("/v1/especialidades/<int:id>", methods=["GET"])
+def getEspecialidadeById(id):
     dbconnection = None
     cursor = None
     serializedData = []
@@ -157,10 +149,10 @@ def getUtentesById(id):
             # dbconnection = psycopg2.connect(host="127.0.0.1", port=DATABASE_PORT,
             #                                 database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
             cursor = dbconnection.cursor()
-            cursor.execute("SELECT id, nome, morada, email, codpost, nif, nmr_utente, telemovel, "
-                           "to_char(data_nascimento, 'YYYY-MM-DD') AS DataNascimento, to_char(datecreate, 'YYYY-MM-DD HH24:MI:SS') AS DateCreate, "
+            cursor.execute("SELECT id, nome, "
+                           "to_char(datecreate, 'YYYY-MM-DD HH24:MI:SS') AS DateCreate, "
                            "to_char(datemodify, 'YYYY-MM-DD HH24:MI:SS') AS DateModify "
-                           "FROM utentes WHERE id = %s", (int(id),))
+                           "FROM especialidades WHERE id = %s", (int(id),))
             datareturn = cursor.fetchall()
             rowcount = cursor.rowcount
 
@@ -176,15 +168,15 @@ def getUtentesById(id):
         if rowcount > 0:
             return jsonify({'ok': True, 'data': serializedData}), 200
         else:
-            return jsonify({'ok': True, 'message': 'Utente not found'}), 200
+            return jsonify({'ok': True, 'message': 'Especialidade not found'}), 200
     else:
         return jsonify({'ok': False, 'message': 'Missing parameters'}), 400
 
 
-# update utente by id
-@utentes.route('/v1/utentes/update/', defaults={'id': None})
-@utentes.route("/v1/utentes/update/<int:id>", methods=["POST"])
-def updateUtenteById(id):
+# update especialidade by id
+@especialidades.route('/v1/especialidades/update/', defaults={'id': None})
+@especialidades.route("/v1/especialidades/update/<int:id>", methods=["POST"])
+def updateEspecialidadeById(id):
     dbconnection = None
     cursor = None
     rowcount = 0
@@ -192,18 +184,8 @@ def updateUtenteById(id):
 
     data = request.get_json()
     data_name = data.get('Nome')
-    data_address = data.get('Morada')
-    data_codpost = data.get('CodPostal')
-    data_email = data.get('Email')
-    data_nif = data.get('Nif')
-    data_mobile = data.get('Telemovel')
-    data_nmrutente = data.get('NrUtente')
-    data_datebirth = datetime.strptime(data.get('DataNascimento'), '%Y-%m-%d').date()
-    data_datecreate = now.strftime('%Y-%m-%d %H:%M:%S')
-    # data_datecreate = now
 
-    if id is not None and data_name is not None and data_address is not None and data_codpost is not None and data_email is not None and data_nif is not None \
-            and data_mobile is not None and data_nmrutente is not None and data_datebirth is not None:
+    if id is not None and data_name is not None:
         try:
             dbconnection = psycopg2.connect(host=DATABASE_HOST, port=DATABASE_PORT,
                                             database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
@@ -211,11 +193,9 @@ def updateUtenteById(id):
             # dbconnection = psycopg2.connect(host="127.0.0.1", port=DATABASE_PORT,
             #                                 database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
             cursor = dbconnection.cursor()
-            cursor.execute("UPDATE utentes SET nome = %s, morada = %s, email = %s, "
-                           "codpost = %s, nif = %s, nmr_utente = %s, telemovel = %s, data_nascimento = %s, datemodify = %s "
+            cursor.execute("UPDATE especialidades SET nome = %s, datemodify = %s "
                            "WHERE id = %s",
-                           (data_name, data_address, data_email, data_codpost, data_nif, data_nmrutente, data_mobile,
-                            data_datebirth, now, int(id)))
+                           (data_name, now, int(id)))
             rowcount = cursor.rowcount
             dbconnection.commit()
 
@@ -227,8 +207,8 @@ def updateUtenteById(id):
             dbconnection.close()
 
         if rowcount > 0:
-            return jsonify({'ok': True, 'message': 'Utente updated successfully'}), 200
+            return jsonify({'ok': True, 'message': 'Especialidade updated successfully'}), 200
         else:
-            return jsonify({'ok': True, 'message': 'Utente not updated'}), 200
+            return jsonify({'ok': True, 'message': 'Especialidade not updated'}), 200
     else:
-        return jsonify({'ok': False, 'message': 'Missing user data'}), 400
+        return jsonify({'ok': False, 'message': 'Missing especialidade data'}), 400
